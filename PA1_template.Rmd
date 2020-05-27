@@ -9,6 +9,7 @@ output:
 ---
 ```{r setup, include=FALSE}
 library(dplyr)
+library(lattice)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -158,22 +159,30 @@ levels(data_na_rm$day) <- c("weekday","weekend")
 
 Plot based on the weekday type.
 ```{r}
-par(mfcol=c(2,1),mar=c(3,4,2,2), oma=c(0,0,0,0))
-with(
-    data_na_rm %>% 
-        group_by(interval, day) %>% 
-        summarise(mean_steps=mean(steps)) %>% 
-        filter(day=="weekday"),
-    plot(mean_steps ~ interval,type='l', main="Weekday Plot", ylab="Average Steps", xaxt="n",  ylim=range(0:205),xlab=NA)
-)
-with(
-    data_na_rm %>% 
-        group_by(interval, day) %>% 
-        summarise(mean_steps=mean(steps)) %>% 
-        filter(day=="weekend"),
-    plot(mean_steps ~ interval,type='l', main="Weekend Plot", ylab="Average Steps", xaxt="n",  ylim=range(0:205)))
-axis(1,at=seq(0,2300,by=100),outer = FALSE,las=2)
-par(mfcol=c(1,1))
+#par(mfcol=c(2,1),mar=c(3,4,2,2), oma=c(0,0,0,0))
+xyplot(mean_steps ~ interval | day, 
+       data = data_na_rm %>%
+           group_by(interval, day) %>%
+           summarise(mean_steps=mean(steps)), type = 'l', layout = c(1,2),
+       ylab = list(
+           label="Average Steps",
+           cex = 0.75
+       ))
+#with(
+#    data_na_rm %>% 
+#        group_by(interval, day) %>% 
+#        summarise(mean_steps=mean(steps)) %>% 
+#        filter(day=="weekday"),
+#    plot(mean_steps ~ interval,type='l', main="Weekday Plot", ylab="Average Steps", xaxt="n",  ylim=range(0:205),xlab=NA)
+#)
+#with(
+#    data_na_rm %>% 
+#        group_by(interval, day) %>% 
+#        summarise(mean_steps=mean(steps)) %>% 
+#        filter(day=="weekend"),
+#    plot(mean_steps ~ interval,type='l', main="Weekend Plot", ylab="Average Steps", xaxt="n",  ylim=range(0:205)))
+#axis(1,at=seq(0,2300,by=100),outer = FALSE,las=2)
+#par(mfcol=c(1,1))
 ```
 
 More steps are taken on the weekdays.
