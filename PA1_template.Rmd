@@ -8,8 +8,11 @@ output:
 
 ---
 ```{r setup, include=FALSE}
-library(dplyr)
 library(lattice)
+library(ggplot2)
+library(dplyr)
+library(plotly)
+library(hrbrthemes)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -99,6 +102,17 @@ abline(h=mean_per_interval%>%filter(mean_steps==max(mean_steps))%>%select(mean_s
 abline(v=mean_per_interval%>%filter(mean_steps==max(mean_steps))%>%select(interval), col='red')
 axis(4,at=mean_per_interval%>%filter(mean_steps==max(mean_steps))%>%select(mean_steps),las=1)
 axis(3,at=mean_per_interval%>%filter(mean_steps==max(mean_steps))%>%select(interval),las=1)
+
+## Interactive plot
+p <- mean_per_interval %>% ggplot(aes(x=interval, y=mean_steps))
+p <- p + geom_area(fill="#69b3a2", alpha=0.5)
+p <- p + geom_line(color="#69b3a2")
+p <- p + ylab("bitcoin price ($)")
+p <- p + ylab("Mean Steps")
+p <- p + theme_ipsum()
+iP <- ggplotly(p)
+iP
+
 ```
 Interval with maximum mean steps
 ```{r}
